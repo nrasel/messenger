@@ -78,7 +78,7 @@ module.exports.userRegiseter =(req,res)=>{
                                 email : userCreate.email,
                                 userName : userCreate.userName,
                                 image : userCreate.image
-                            },'abcd1234',{expiresIn : '7d'})
+                            },process.env.SECRET,{expiresIn : '7d'})
 
                             const options ={
                                 expires : new Date(Date.now() + 7*24*60*60*1000)
@@ -133,7 +133,7 @@ module.exports.userLogin=async(req,res)=>{
                     email : checkUser.email,
                     userName : checkUser.userName,
                     image : checkUser.image
-                },'abcd1234',{expiresIn : '7d'})
+                },process.env.SECRET,{expiresIn : process.env.TOKEN_EXP})
 
                 const options ={
                     expires : new Date(Date.now() + 7*24*60*60*1000)

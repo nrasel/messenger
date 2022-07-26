@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const databaseConnect=()=>{
-    mongoose.connect('mongodb://localhost:27017/messenger',{
+    mongoose.connect(process.env.BATABASE_URL,{
         useNewUrlParser: true,
         useUnifiedTopology: true,
     })

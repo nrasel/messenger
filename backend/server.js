@@ -30,7 +30,7 @@ app.get("/", (req, res) => {
 
 databaseConnect();
 
-const port = 5000;
+const port =process.env.PORT;
 
 app.listen(port, () => {
   console.log(`server is running on port ${port}`);
