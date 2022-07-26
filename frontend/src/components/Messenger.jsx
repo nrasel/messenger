@@ -6,12 +6,12 @@ import ActiveFriend from "./ActiveFriend";
 import Friends from "./Friends";
 import RightSide from "./RightSide";
 import {useDispatch, useSelector} from 'react-redux'
-import { getFriends,messageSend } from "../features/actions/messengerAction";
+import { getFriends,messageSend,getMessage } from "../features/actions/messengerAction";
 import { useState } from "react";
 
 function Messenger() {
 
-  const {friends}=useSelector(state=>state.messenger);
+  const {friends,message}=useSelector(state=>state.messenger);
   const {myInfo}=useSelector(state=>state.auth)
  
   const [currentFriend,setCurrentFriend]=useState('');
@@ -19,7 +19,7 @@ function Messenger() {
   const inputHandle=(e)=>{
     setNewMessage(e.target.value);
   }
-  
+  // console.log(message)
 
   const sendMessages=(e)=>{
     e.preventDefault();
@@ -43,6 +43,12 @@ function Messenger() {
       setCurrentFriend(friends[0]);
     }
   },[friends])
+
+  useEffect(()=>{
+    dispatch(getMessage(currentFriend._id))
+  },[currentFriend?._id])
+
+
   return (
     <div className="messenger">
       <div className="row">
@@ -94,7 +100,7 @@ function Messenger() {
           </div>
         </div>
         {
-          currentFriend ? <RightSide currentFriend={currentFriend} inputHandle={inputHandle} newMessage={newMessage} sendMessages={sendMessages} />:'Please Select your friend'
+          currentFriend ? <RightSide currentFriend={currentFriend} inputHandle={inputHandle} newMessage={newMessage} sendMessages={sendMessages} message={message} />:'Please Select your friend'
         }
       </div>
     </div>

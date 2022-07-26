@@ -34,9 +34,26 @@ module.exports.messageUploadDB=async(req,res)=>{
             senderId : senderId,
             senderName: senderName,
             receiveId : receiverId,
-            message : message
+            message : {
+                text : message,
+                image : ''
+            }
             }
         })
+    } catch (error) {
+        res.status(500).json({error:{errorMessage:'Internal server error'}})
+    }
+}
+
+
+module.exports.messageGet=async(req,res)=>{
+    const myId=req.myId
+    const fdId=req.params.id
+    
+    try {
+        let getAllMessage = await messageModel.find({})
+        getAllMessage = getAllMessage.filter(m=>m.senderId === myId && m.receiveId===fdId || m.receiveId === myId && m.senderId == fdId)
+        res.status(200).json({success: true, message:getAllMessage})
     } catch (error) {
         res.status(500).json({error:{errorMessage:'Internal server error'}})
     }
