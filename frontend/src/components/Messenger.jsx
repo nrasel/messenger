@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useRef } from "react";
 import { BiSearch } from "react-icons/bi";
 import { BsThreeDots } from "react-icons/bs";
 import { FaEdit } from "react-icons/fa";
@@ -10,6 +10,8 @@ import { getFriends,messageSend,getMessage } from "../features/actions/messenger
 import { useState } from "react";
 
 function Messenger() {
+
+  const scrollRef=useRef();
 
   const {friends,message}=useSelector(state=>state.messenger);
   const {myInfo}=useSelector(state=>state.auth)
@@ -32,6 +34,13 @@ function Messenger() {
   
   }
 
+  const emojiSend=(emo)=>{
+    setNewMessage(`${newMessage}`+emo)
+  }
+
+  const imageSend=(e)=>{
+    console.log(e.target.files)
+  }
 
   const dispatch=useDispatch()
   useEffect(()=>{
@@ -48,6 +57,9 @@ function Messenger() {
     dispatch(getMessage(currentFriend._id))
   },[currentFriend?._id])
 
+  useEffect(()=>{
+    scrollRef.current?.scrollIntoView({behaviour:'smooth'})
+  },[message])
 
   return (
     <div className="messenger">
@@ -100,7 +112,8 @@ function Messenger() {
           </div>
         </div>
         {
-          currentFriend ? <RightSide currentFriend={currentFriend} inputHandle={inputHandle} newMessage={newMessage} sendMessages={sendMessages} message={message} />:'Please Select your friend'
+          currentFriend ? <RightSide 
+          currentFriend={currentFriend} inputHandle={inputHandle} newMessage={newMessage} sendMessages={sendMessages} message={message} scrollRef={scrollRef} emojiSend={emojiSend} imageSend={imageSend} />:'Please Select your friend'
         }
       </div>
     </div>

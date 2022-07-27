@@ -6,7 +6,7 @@ import { AiFillGift } from "react-icons/ai";
 // import { MdSend } from 'react-icons/md';
 
 
-const MessegeSend = ({inputHandle,newMessage,sendMessages}) => {
+const MessegeSend = ({inputHandle,newMessage,sendMessages,emojiSend}) => {
   const emojis = [
     "😀",
     "😃",
@@ -160,7 +160,7 @@ const MessegeSend = ({inputHandle,newMessage,sendMessages}) => {
       <div className="emoji-section">
         <div className="emoji">
           {emojis.map((e,index) => (
-            <span key={index}>{e}</span>
+            <span style={{cursor:'pointer'}} key={index} onClick={()=>emojiSend(e)}>{e}</span>
           ))}
         </div>
       </div>
