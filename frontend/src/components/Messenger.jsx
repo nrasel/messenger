@@ -16,7 +16,11 @@ function Messenger() {
   const {myInfo}=useSelector(state=>state.auth)
  
   const [currentFriend,setCurrentFriend]=useState('');
+  console.log(currentFriend)
   const [newMessage,setNewMessage]=useState('');
+  
+  // for socket
+  const [activeUser,setActiveUser] = useState([])
 
   const scrollRef=useRef();
 
@@ -29,6 +33,13 @@ function Messenger() {
   // send data to socket
   useEffect(()=>{
     socket.current.emit('addUser',myInfo.id,myInfo)
+  },[])
+
+  useEffect(()=>{
+    socket.current.on('getUser',(users)=>{
+      const filterUser = users.filter(u=>u.userId !== myInfo.id);
+      setActiveUser(filterUser)
+    })
   },[])
   
 
@@ -43,7 +54,7 @@ function Messenger() {
     const data={
       senderName : myInfo.userName,
       receiverId: currentFriend._id,
-      message: newMessage?newMessage:'👍'
+      message: newMessage?newMessage:'❤️'
     }
     dispatch(messageSend(data))
   
@@ -125,7 +136,10 @@ function Messenger() {
               </div>
             </div>
             <div className="active-friends">
-              <ActiveFriend />
+              {
+                activeUser && activeUser.length>0 ? activeUser.map((u,idx)=><ActiveFriend key={idx} user={u} setCurrentFriend={setCurrentFriend} />) : ''
+              }
+              
             </div>
             <div className="friends">
               {
@@ -141,7 +155,7 @@ function Messenger() {
         </div>
         {
           currentFriend ? <RightSide 
-          currentFriend={currentFriend} inputHandle={inputHandle} newMessage={newMessage} sendMessages={sendMessages} message={message} scrollRef={scrollRef} emojiSend={emojiSend} imageSend={imageSend} />:'Please Select your friend'
+          currentFriend={currentFriend} inputHandle={inputHandle} newMessage={newMessage} sendMessages={sendMessages} message={message} scrollRef={scrollRef} emojiSend={emojiSend} imageSend={imageSend} activeUser={activeUser} />:'Please Select your friend'
         }
       </div>
     </div>

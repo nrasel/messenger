@@ -156,7 +156,7 @@ const MessegeSend = ({inputHandle,newMessage,sendMessages,emojiSend,imageSend}) 
         />
         <label htmlFor="emoji">&#128515;</label>
       </div>
-      <div onClick={sendMessages} className="file">👍</div>
+      <div onClick={sendMessages} className="file">❤️</div>
       <div className="emoji-section">
         <div className="emoji">
           {emojis.map((e,index) => (

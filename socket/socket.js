@@ -5,9 +5,29 @@ const io =require('socket.io')(8000,{
     }
 })
 
+let users=[];
+
+const addUser = (userId,socketId,userInfo)=>{
+
+    const checkUser = users.some(u=>u.userId === userId)
+    if(!checkUser){
+        users.push({userId,socketId,userInfo})
+    }
+}
+
+
+const userRemove=(socketId)=>{
+    users = users.filter(u=>u.socketId !== socketId)
+}
 io.on('connection',(socket)=>{
-    console.log('socket is connecting....')
+    console.log('user is connected....')
     socket.on('addUser',(userId,userInfo)=>{
-        console.log(userInfo)
+        addUser(userId,socket.id,userInfo);
+        io.emit('getUser',users)
+    })
+    socket.on('disconnect',()=>{
+        console.log('user disconnect....')
+        userRemove(socket.id);
+        io.emit('getUser',users);
     })
 })
