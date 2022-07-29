@@ -6,7 +6,7 @@ import ActiveFriend from "./ActiveFriend";
 import Friends from "./Friends";
 import RightSide from "./RightSide";
 import {useDispatch, useSelector} from 'react-redux'
-import { getFriends,messageSend,getMessage } from "../features/actions/messengerAction";
+import { getFriends,messageSend,getMessage,ImageMessageSend } from "../features/actions/messengerAction";
 import { useState } from "react";
 
 function Messenger() {
@@ -40,6 +40,19 @@ function Messenger() {
 
   const imageSend=(e)=>{
     console.log(e.target.files)
+    if(e.target.files.length !== 0){
+      const imageName=e.target.files[0].name
+      const newImageName = Date.now() + imageName
+
+      const formData=new FormData()
+      formData.append('senderName',myInfo.userName);
+      formData.append('imageName',newImageName)
+      formData.append('receiverId',currentFriend._id);
+      formData.append('image',e.target.files[0])
+
+      dispatch(ImageMessageSend(formData))
+      
+    }
   }
 
   const dispatch=useDispatch()

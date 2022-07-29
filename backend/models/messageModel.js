@@ -9,7 +9,7 @@ const messageSchmea=new Schema({
         type: String,
         required: true
     },
-    receiveId : {
+    receiverId : {
         type: String,
         required: true
     },

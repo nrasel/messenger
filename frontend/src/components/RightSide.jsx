@@ -39,7 +39,7 @@ const RightSide = (props) => {
                 </div>
               </div>
               <Message message={message} currentFriend={currentFriend} scrollRef={scrollRef} />
-              <MessegeSend inputHandle={inputHandle} newMessage={newMessage} sendMessages={sendMessages} emojiSend={emojiSend} />
+              <MessegeSend inputHandle={inputHandle} newMessage={newMessage} sendMessages={sendMessages} emojiSend={emojiSend} imageSend={imageSend} />
             </div>
           </div>
           <div className="col-4">
