@@ -16,18 +16,25 @@ function Messenger() {
   const {myInfo}=useSelector(state=>state.auth)
  
   const [currentFriend,setCurrentFriend]=useState('');
-  console.log(currentFriend)
   const [newMessage,setNewMessage]=useState('');
+  const [socketMessage,setSocketMessage]=useState('');
+  const [typeingMessage,setTypingMessage]=useState('')
   
   // for socket
-  const [activeUser,setActiveUser] = useState([])
+  const [activeUser,setActiveUser] = useState([]);
 
   const scrollRef=useRef();
 
   // for socket
   const socket = useRef();
   useEffect(() => {
-    socket.current= io('ws://localhost:8000')
+    socket.current= io('ws://localhost:8000');
+    socket.current.on('getMessage',(data)=>{
+      setSocketMessage(data);
+    })
+    socket.current.on('typeingMessage',(data)=>{
+      setTypingMessage(data);
+    })
   }, [])
 
   // send data to socket
@@ -43,11 +50,31 @@ function Messenger() {
   },[])
   
 
+  // check socket msg
+  useEffect(()=>{
+    if(socketMessage && currentFriend){
+      if(socketMessage.senderId === currentFriend._id && socketMessage.receiverId === myInfo.id){
+        dispatch({
+          type: 'SOCKET_MESSAGE',
+          payload:{
+            message: socketMessage
+          }
+        })
+      }
+    }
+    setSocketMessage('')
+  },[socketMessage])
+
   
   const inputHandle=(e)=>{
     setNewMessage(e.target.value);
+
+    socket.current.emit('typeingMessage',{
+      senderId : myInfo.id,
+      receiverId : currentFriend._id,
+      msg : e.target.value
+    })
   }
-  // console.log(message)
 
   const sendMessages=(e)=>{
     e.preventDefault();
@@ -56,8 +83,25 @@ function Messenger() {
       receiverId: currentFriend._id,
       message: newMessage?newMessage:'❤️'
     }
+
+    socket.current.emit('sendMessage',{
+      senderId: myInfo.id,
+      senderName : myInfo.userName,
+      receiverId: currentFriend._id,
+      time: new Date(),
+      message: {
+        text: newMessage?newMessage:'❤️',
+        image: ''
+      }
+    })
+    socket.current.emit('typeingMessage',{
+      senderId : myInfo.id,
+      receiverId : currentFriend._id,
+      msg : ''
+    })
     dispatch(messageSend(data))
   
+    setNewMessage('')
   }
 
   const emojiSend=(emo)=>{
@@ -69,6 +113,17 @@ function Messenger() {
     if(e.target.files.length !== 0){
       const imageName=e.target.files[0].name
       const newImageName = Date.now() + imageName
+
+      socket.current.emit('sendMessage',{
+        senderId: myInfo.id,
+        senderName : myInfo.userName,
+        receiverId: currentFriend._id,
+        time: new Date(),
+        message: {
+          text: '',
+          image: newImageName
+        }
+      })
 
       const formData=new FormData()
       formData.append('senderName',myInfo.userName);
@@ -155,7 +210,7 @@ function Messenger() {
         </div>
         {
           currentFriend ? <RightSide 
-          currentFriend={currentFriend} inputHandle={inputHandle} newMessage={newMessage} sendMessages={sendMessages} message={message} scrollRef={scrollRef} emojiSend={emojiSend} imageSend={imageSend} activeUser={activeUser} />:'Please Select your friend'
+          currentFriend={currentFriend} inputHandle={inputHandle} newMessage={newMessage} sendMessages={sendMessages} message={message} scrollRef={scrollRef} emojiSend={emojiSend} imageSend={imageSend} activeUser={activeUser} typeingMessage={typeingMessage} />:'Please Select your friend'
         }
       </div>
     </div>
