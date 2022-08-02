@@ -9,6 +9,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import {io} from 'socket.io-client'
 import { getFriends,messageSend,getMessage,ImageMessageSend } from "../features/actions/messengerAction";
 import { useState } from "react";
+import toast,{Toaster} from 'react-hot-toast'
 
 function Messenger() {
 
@@ -76,6 +77,13 @@ function Messenger() {
     })
   }
 
+
+  useEffect(()=>{
+    if( socketMessage && socketMessage.senderId !== currentFriend._id && socketMessage.receiverId === myInfo.id){
+      toast.success(`${socketMessage.senderName} send a new message`)
+    }
+  },[socketMessage])
+
   const sendMessages=(e)=>{
     e.preventDefault();
     const data={
@@ -106,6 +114,11 @@ function Messenger() {
 
   const emojiSend=(emo)=>{
     setNewMessage(`${newMessage}`+emo)
+    socket.current.emit('typeingMessage',{
+      senderId : myInfo.id,
+      receiverId : currentFriend._id,
+      msg : emo
+    })
   }
 
   const imageSend=(e)=>{
@@ -156,7 +169,15 @@ function Messenger() {
   },[message])
 
   return (
+   
     <div className="messenger">
+       <Toaster position={'top-right'} reverseOrder={false}
+       toastOptions={{
+        style:{
+          fontSize:'18px'
+        }
+       }}
+       />
       <div className="row">
         <div className="col-3">
           <div className="left-side">
