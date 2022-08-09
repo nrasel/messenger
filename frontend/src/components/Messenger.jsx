@@ -13,6 +13,7 @@ import toast,{Toaster} from 'react-hot-toast'
 
 function Messenger() {
 
+
   const {friends,message}=useSelector(state=>state.messenger);
   const {myInfo}=useSelector(state=>state.auth)
  
@@ -122,7 +123,6 @@ function Messenger() {
   }
 
   const imageSend=(e)=>{
-    console.log(e.target.files)
     if(e.target.files.length !== 0){
       const imageName=e.target.files[0].name
       const newImageName = Date.now() + imageName
@@ -220,7 +220,7 @@ function Messenger() {
             <div className="friends">
               {
                 friends && friends.length > 0 ? friends.map((fd,idx)=>
-                  <div key={idx} onClick={()=>setCurrentFriend(fd)} className={currentFriend._id === fd._id? 'hover-friend active': 'hover-friend'}>
+                  <div key={idx} onClick={()=>setCurrentFriend(fd.fndInfo)} className={currentFriend._id === fd.fndInfo._id? 'hover-friend active': 'hover-friend'}>
                 <Friends friend={fd} />
               </div>
                 ):'no friends'
