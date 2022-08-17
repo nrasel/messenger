@@ -36,18 +36,11 @@ io.on('connection',(socket)=>{
 
     // get message from frontend
     socket.on('sendMessage',(data)=>{
+        
         const user = findFriend(data.receiverId)
+        // console.log(data)
         if(user !==undefined){
-            socket.to(user.socketId).emit('getMessage',{
-                senderId : data.senderId,
-                senderName: data.senderName,
-                receiverId : data.receiverId,
-                createAt : data.time,
-                message: {
-                    text : data.message.text,
-                    image: data.message.image
-                }
-            })
+            socket.to(user.socketId).emit('getMessage',data)
         }
     })
 

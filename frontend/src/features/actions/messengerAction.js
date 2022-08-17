@@ -1,67 +1,69 @@
-import axios from 'axios'
-import { FRIENDS_GET_SUCCESS,MESSAGE_GET_SUCCESS,MESSAGE_SEND_SUCCESS } from '../../app/type/messengerType';
-export const getFriends =()=> async(dispatch)=>{
-    
-    
+import axios from "axios";
+import {
+  FRIENDS_GET_SUCCESS,
+  MESSAGE_GET_SUCCESS,
+  MESSAGE_SEND_SUCCESS,
+} from "../../app/type/messengerType";
+export const getFriends = () => async (dispatch) => {
+  try {
+    const response = await axios.get("/api/messenger/get-friends");
+    dispatch({
+      type: FRIENDS_GET_SUCCESS,
+      payload: {
+        friends: response.data.friends,
+      },
+    });
+  } catch (error) {
+    console.log(error.response.data);
+  }
+};
+
+export const messageSend = (data) => async (dispatch) => {
+  try {
+    const response = await axios.post("/api/messenger/send-message", data);
+    dispatch({
+      type: MESSAGE_SEND_SUCCESS,
+      payload: {
+        message: response.data.message,
+      },
+    });
+  } catch (error) {
+    console.log(error.response.data);
+  }
+};
+
+export const getMessage = (id) => {
+  return async (dispatch) => {
     try {
-       const response=await axios.get('/api/messenger/get-friends');
-       dispatch({
-        type: FRIENDS_GET_SUCCESS,
-        payload:{
-            friends:response.data.friends
-        }
-       })
+      const response = await axios.get(`/api/messenger/get-message/${id}`);
+      dispatch({
+        type: MESSAGE_GET_SUCCESS,
+        payload: {
+          message: response.data.message,
+        },
+      });
     } catch (error) {
-        console.log(error.response.data)
+      console.log(error);
     }
-}
+  };
+};
 
+export const ImageMessageSend = (data) => async (dispatch) => {
+  try {
+    const response = await axios.post(
+      "/api/messenger/image-message-send",
+      data
+    );
 
-export const messageSend=(data)=>async(dispatch)=>{
-    
-    try {
-        const response=await axios.post('/api/messenger/send-message',data)
-        dispatch({
-            type:MESSAGE_SEND_SUCCESS,
-            payload: {
-                message : response.data.message
-            }
-        })
-    } catch (error) {
-        console.log(error.response.data)
-    }
-}
+    dispatch({
+      type: MESSAGE_SEND_SUCCESS,
+      payload: {
+        message: response.data.message
+      },
+    });
 
-export const getMessage=(id)=>{
-    return async(dispatch)=>{
-        try {
-            const response=await axios.get(`/api/messenger/get-message/${id}`)
-            dispatch({
-                type : MESSAGE_GET_SUCCESS,
-                payload:{
-                    message : response.data.message
-                }
-            })
-        } catch (error) {
-            console.log(error)
-        }
-    }
-}
-
-
-export const ImageMessageSend = (data) =>async(dispatch)=>{
-    try {
-        const response = await axios.post('/api/messenger/image-message-send',data)
-
-
-        dispatch({
-            type : 'IMAGE_MESSAGE_SUCCESS',
-            payload : response.data.message
-        })
-
-
-        // console.log(response.data)
-    } catch (error) {
-        console.log(error.response.data)
-    }
-}
+    // console.log(response.data)
+  } catch (error) {
+    console.log(error.response.data);
+  }
+};
