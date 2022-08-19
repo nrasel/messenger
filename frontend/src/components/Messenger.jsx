@@ -17,6 +17,7 @@ import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
 function Messenger() {
+  const dispatch = useDispatch();
   const { friends, message, messageSendSuccess } = useSelector(
     (state) => state.messenger
   );
@@ -147,7 +148,6 @@ function Messenger() {
     }
   };
 
-  const dispatch = useDispatch();
 
   useEffect(() => {
     if (messageSendSuccess) {

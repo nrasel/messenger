@@ -29,7 +29,7 @@ module.exports.getFriends = async (req, res) => {
     for(let i=0; i<friendGet.length;i++){
       let lmsg=await getLastMessage(myId,friendGet[i].id)
       fnd_msg = [...fnd_msg,{fndInfo:friendGet[i],msgInfo:lmsg}]
-      console.log(fnd_msg)
+      // console.log(fnd_msg)
     }
 
     res.status(200).json({ success: true, friends: fnd_msg });
