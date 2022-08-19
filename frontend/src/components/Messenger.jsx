@@ -70,6 +70,12 @@ function Messenger() {
             message: socketMessage,
           },
         });
+        dispatch({
+          type:'UPDATE_FRIEND_MESSAGE',
+          payload:{
+            msgInfo:socketMessage
+          }
+        })
       }
     }
     setSocketMessage("");
