@@ -67,3 +67,24 @@ export const ImageMessageSend = (data) => async (dispatch) => {
     console.log(error.response.data);
   }
 };
+
+
+export const seenMessage=(msg)=>async(dispatch)=>{
+
+  try {
+    const response = await axios.post('/api/messenger/seen-message',msg)
+  } catch (error) {
+    console.log(error.response.message)
+  }
+
+  // console.log(msg)
+}
+
+export const updateMessage=(msg)=>async(dispatch)=>{
+  try {
+    const response = await axios.post('/api/messenger/delivared-message',msg)
+    // console.log(response)
+  } catch (error) {
+    console.log(error.response.message)
+  }
+}

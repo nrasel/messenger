@@ -12,6 +12,8 @@ import {
   messageSend,
   getMessage,
   ImageMessageSend,
+  seenMessage,
+  updateMessage
 } from "../features/actions/messengerAction";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
@@ -22,6 +24,8 @@ function Messenger() {
     (state) => state.messenger
   );
   const { myInfo } = useSelector((state) => state.auth);
+
+  // console.log(myInfo.id)
 
   const [currentFriend, setCurrentFriend] = useState("");
   const [newMessage, setNewMessage] = useState("");
@@ -43,6 +47,24 @@ function Messenger() {
     socket.current.on("typeingMessage", (data) => {
       setTypingMessage(data);
     });
+    socket.current.on('msgSeenResponse',msg=>{
+      dispatch({
+        type:'SEEN_MESSAGE',
+        payload:{
+          msgInfo:msg
+        }
+      })
+    })
+
+    socket.current.on('msgDelivaredResponse',msg=>{
+      dispatch({
+        type:'DELIVARED_MESSAGE',
+        payload:{
+          msgInfo : msg
+        }
+      })
+    })
+
   }, []);
 
   // send data to socket
@@ -70,13 +92,19 @@ function Messenger() {
             message: socketMessage,
           },
         });
+
+        dispatch(seenMessage(socketMessage))
+        socket.current.emit('messageSeen',socketMessage);
         dispatch({
           type:'UPDATE_FRIEND_MESSAGE',
           payload:{
-            msgInfo:socketMessage
+            msgInfo:socketMessage,
+            status:'seen'
           }
         })
+        
       }
+      
     }
     setSocketMessage("");
   }, [socketMessage]);
@@ -98,6 +126,15 @@ function Messenger() {
       socketMessage.receiverId === myInfo.id
     ) {
       toast.success(`${socketMessage.senderName} send a new message`);
+      dispatch(updateMessage(socketMessage))
+      socket.current.emit('delivatedMessage',socketMessage);
+      dispatch({
+        type:'UPDATE_FRIEND_MESSAGE',
+        payload:{
+          msgInfo:socketMessage,
+          status:'delivared'
+        }
+      })
     }
   }, [socketMessage]);
 
@@ -133,16 +170,16 @@ function Messenger() {
       const imageName = e.target.files[0].name;
       const newImageName = Date.now() + imageName;
 
-      socket.current.emit("sendMessage", {
-        senderId: myInfo.id,
-        senderName: myInfo.userName,
-        receiverId: currentFriend._id,
-        time: new Date(),
-        message: {
-          text: "",
-          image: newImageName,
-        },
-      });
+      // socket.current.emit("sendMessage", {
+      //   senderId: myInfo.id,
+      //   senderName: myInfo.userName,
+      //   receiverId: currentFriend._id,
+      //   time: new Date(),
+      //   message: {
+      //     text: "",
+      //     image: newImageName,
+      //   },
+      // });
 
       const formData = new FormData();
       formData.append("senderName", myInfo.userName);

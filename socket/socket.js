@@ -44,6 +44,20 @@ io.on('connection',(socket)=>{
         }
     })
 
+    socket.on('messageSeen',msg=>{
+        const user = findFriend(msg.senderId)
+        if(user !==undefined){
+            socket.to(user.socketId).emit('msgSeenResponse',msg)
+        }
+    })
+
+    socket.on('delivatedMessage',msg=>{
+        const user = findFriend(msg.senderId)
+        if(user !==undefined){
+            socket.to(user.socketId).emit('msgDelivaredResponse',msg)
+        }
+    })
+
     // get typing msg
     socket.on('typeingMessage',(data)=>{
         const user = findFriend(data.receiverId)

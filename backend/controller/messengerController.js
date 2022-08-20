@@ -54,15 +54,7 @@ module.exports.messageUploadDB = async (req, res) => {
     });
     res.status(201).json({
       success: true,
-      message: {
-        senderId: senderId,
-        senderName: senderName,
-        receiverId: receiverId,
-        message: {
-          text: message,
-          image: "",
-        },
-      },
+      message: insertMessage
     });
   } catch (error) {
     res.status(500).json({ error: { errorMessage: "Internal server error" } });
@@ -124,15 +116,7 @@ module.exports.ImageMessageSend = (req, res) => {
           });
           res.status(201).json({
             success: true,
-            message: {
-              senderId: senderId,
-              senderName: senderName,
-              receiverId: receiverId,
-              message: {
-                text: "",
-                image: files.image.originalFilename,
-              },
-            },
+            message: insertMessage
           });
         }
       });
@@ -144,3 +128,34 @@ module.exports.ImageMessageSend = (req, res) => {
     }
   });
 };
+
+module.exports.messageSeen=async(req,res)=>{
+  console.log(req.body)
+  const messageId=req.body._id;
+
+  await messageModel.findByIdAndUpdate(messageId,{status:'seen'})
+  .then(()=>{
+    res.status(200).json({success:true})
+  }).
+  catch(()=>{
+    res
+        .status(500)
+        .json({ error: { errorMessage: "Internal server error" } });
+  })
+}
+
+
+module.exports.delivaredMessage=async(req,res)=>{
+  console.log(req.body)
+  const messageId=req.body._id;
+
+  await messageModel.findByIdAndUpdate(messageId,{status:'delivared'})
+  .then(()=>{
+    res.status(200).json({success:true})
+  }).
+  catch(()=>{
+    res
+        .status(500)
+        .json({ error: { errorMessage: "Internal server error" } });
+  })
+}

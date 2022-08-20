@@ -1,9 +1,11 @@
 import React from "react";
-import moment from 'moment'
+import moment from "moment";
+import { RiCheckboxCircleFill } from "react-icons/ri";
+import { HiOutlineCheckCircle } from "react-icons/hi";
 
 const Friends = (props) => {
-  const {fndInfo,msgInfo} =props.friend
-  const {myId}=props.myId
+  const { fndInfo, msgInfo } = props.friend;
+  const  myId  = props.myId;
   return (
     <div className="friend">
       <div className="friend-image">
@@ -12,30 +14,56 @@ const Friends = (props) => {
         </div>
       </div>
       <div className="friend-name-seen">
-      <div className="friend-name">
-        <h4>{fndInfo.userName}</h4>
-        <div className="msg-time">
-          {
-            msgInfo && msgInfo.senderId === myId ? <span>You </span>:<span>{fndInfo.userName +' '}</span>
+        <div className="friend-name">
+          <h4>{fndInfo.userName}</h4>
+          <div className="msg-time">
+            {msgInfo && msgInfo.senderId === myId ? (
+              <span>You </span>
+            ) : (
+              <span>{fndInfo.userName + ' '}</span>
+            )}
+            {msgInfo && msgInfo.message.text ? (
+              <span>{msgInfo.message.text.slice(0, 10)}</span>
+            ) : msgInfo && msgInfo.message.image ? (
+              <span>send a image</span>
+            ) : (
+              <span>connect you</span>
+            )}
+            <span>
+              {msgInfo
+                ? moment(msgInfo.createdAt).startOf("mini").fromNow()
+                : moment(fndInfo.createdAt).startOf("mini").fromNow()}
+            </span>
+          </div>
+        </div>
+        {
+        myId === msgInfo?.senderId ? 
+          <div className="seen-unseen-icon">
 
-           
-          }
-          {
-             msgInfo && msgInfo.message.text ? <span>{msgInfo.message.text.slice(0,10)}</span>:  msgInfo?.message.image? <span>send a image</span>:<span>connect you</span>
-          }
-          <span>{msgInfo?moment(msgInfo.createdAt).startOf('mini').fromNow():moment(fndInfo.createdAt).startOf('mini').fromNow()}</span>
-        </div>
-      </div>
-      {
-        myId === msgInfo?.senderId ? <div className="seen-unseen-icon">
-          <img src={`./image/${fndInfo.image}`} alt="" />
-        </div>:
-        <div className="seen-unseen-icon">
-        <div className="seen-icon">
-          
-        </div>
-      </div>
-      }
+            {/* <img src={`./image/${fndInfo.image}`} alt="" /> */}
+            
+            {msgInfo.status === "seen" ? 
+              <img src={`./image/${fndInfo.image}`} alt="" />
+             : msgInfo.status === "delivared" ? 
+              <div className="delivared">
+                <RiCheckboxCircleFill />
+              </div>
+             : 
+              <div className="unseen">
+                <HiOutlineCheckCircle />
+              </div>
+            }
+          </div>
+         : 
+          <div className="seen-unseen-icon">
+            {
+              msgInfo?.status !== undefined && msgInfo?.status !=='seen'?<div className="seen-icon">
+
+              </div>:''
+            }
+            
+          </div>
+        }
       </div>
     </div>
   );
