@@ -20,7 +20,7 @@ import toast, { Toaster } from "react-hot-toast";
 
 function Messenger() {
   const dispatch = useDispatch();
-  const { friends, message, messageSendSuccess } = useSelector(
+  const { friends, message, messageSendSuccess,message_get_success } = useSelector(
     (state) => state.messenger
   );
   const { myInfo } = useSelector((state) => state.auth);
@@ -62,6 +62,12 @@ function Messenger() {
         payload:{
           msgInfo : msg
         }
+      })
+    })
+    socket.current.on('seenSuccess',data=>{
+      dispatch({
+        type:'SEEN_ALL',
+        payload: data
       })
     })
 
@@ -219,7 +225,27 @@ function Messenger() {
 
   useEffect(() => {
     dispatch(getMessage(currentFriend._id));
+    
   }, [currentFriend?._id]);
+
+  useEffect(()=>{
+    if(message.length>0){
+      if(message[message.length-1].senderId !== myInfo.id && message[message.length-1].status !=='seen'){
+        dispatch({
+          type:'UPDATE',
+          payload:{
+            id:currentFriend._id
+          }
+        })
+        socket.current.emit('seen',{senderId : currentFriend._id,receiverId: myInfo.id})
+        dispatch(seenMessage({_id: message[message.length-1]._id}))
+      }
+     
+    }
+    dispatch({
+      type:'MESSAGE_GET_SUCCESS_CLEAR',
+    })
+  },[message_get_success])
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behaviour: "smooth" });
@@ -269,7 +295,7 @@ function Messenger() {
                 />
               </div>
             </div>
-            <div className="active-friends">
+            {/* <div className="active-friends">
               {activeUser && activeUser.length > 0
                 ? activeUser.map((u, idx) => (
                     <ActiveFriend
@@ -279,7 +305,7 @@ function Messenger() {
                     />
                   ))
                 : ""}
-            </div>
+            </div> */}
             <div className="friends">
               {friends && friends.length > 0
                 ? friends.map((fd, idx) => (
@@ -292,7 +318,7 @@ function Messenger() {
                           : "hover-friend"
                       }
                     >
-                      <Friends myId={myInfo.id} friend={fd} />
+                      <Friends activeUser={activeUser} myId={myInfo.id} friend={fd} />
                     </div>
                   ))
                 : "no friends"}

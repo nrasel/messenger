@@ -5,13 +5,16 @@ import {
   UPDATE_FRIEND_MESSAGE,
   MESSAGE_SEND_SUCCESS_CLEAR,
   SEEN_MESSAGE,
-  DELIVARED_MESSAGE
+  DELIVARED_MESSAGE,
+  UPDATE,
+  MESSAGE_GET_SUCCESS_CLEAR,
 } from "../type/messengerType";
 
 const messengerState = {
   friends: [],
   message: [],
   messageSendSuccess: false,
+  message_get_success: false,
 };
 
 export const messengerReducer = (state = messengerState, action) => {
@@ -26,6 +29,7 @@ export const messengerReducer = (state = messengerState, action) => {
   if (type === MESSAGE_GET_SUCCESS) {
     return {
       ...state,
+      message_get_success: true,
       message: payload.message,
     };
   }
@@ -61,34 +65,56 @@ export const messengerReducer = (state = messengerState, action) => {
     };
   }
 
-  if(type===SEEN_MESSAGE){
+  if (type === SEEN_MESSAGE) {
     const index = state.friends.findIndex(
       (f) =>
         f.fndInfo._id === payload.msgInfo.receiverId ||
         f.fndInfo._id === payload.msgInfo.senderId
     );
-    state.friends[index].msgInfo.status = "seen"
+    state.friends[index].msgInfo.status = "seen";
 
     return {
-      ...state
-    }
+      ...state,
+    };
   }
 
-
-  if(type===DELIVARED_MESSAGE){
+  if (type === DELIVARED_MESSAGE) {
     const index = state.friends.findIndex(
       (f) =>
         f.fndInfo._id === payload.msgInfo.receiverId ||
         f.fndInfo._id === payload.msgInfo.senderId
     );
-    state.friends[index].msgInfo.status = "delivared"
+    state.friends[index].msgInfo.status = "delivared";
 
     return {
+      ...state,
+    };
+  }
+
+  if (type === UPDATE) {
+    const index = state.friends.findIndex((f) => f.fndInfo._id === payload.id);
+    if (state.friends[index].msgInfo) {
+      state.friends[index].msgInfo.status = "seen";
+    }
+    return {
+      ...state,
+    };
+  }
+
+  if (type === MESSAGE_GET_SUCCESS_CLEAR) {
+    return {
+      ...state,
+      message_get_success: false,
+    };
+  }
+
+  if(type==='SEEN_ALL'){
+    const index =state.friends.findIndex(f=>f.fndInfo._id === payload.receiverId);
+    state.friends[index].msgInfo.status='seen';
+    return{
       ...state
     }
   }
-
-
 
   return state;
 };

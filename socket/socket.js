@@ -58,6 +58,13 @@ io.on('connection',(socket)=>{
         }
     })
 
+    socket.on('seen',data=>{
+        const user = findFriend(data.senderId)
+        if(user !==undefined){
+            socket.to(user.socketId).emit('seenSuccess',data)
+        }
+    })
+
     // get typing msg
     socket.on('typeingMessage',(data)=>{
         const user = findFriend(data.receiverId)
