@@ -1,12 +1,13 @@
 import React from "react";
 import { BsChevronDown } from "react-icons/bs";
 
-const FriendInfo = ({ currentFriend, activeUser }) => {
+const FriendInfo = ({ currentFriend, activeUser,message }) => {
+
   return (
     <div className="friend-info">
       <input type="checkbox" id="gallery" />
       <div className="image-name">
-        <div  className="image">
+        <div className="image">
           <img src={`./image/${currentFriend.image}`} alt="" />
         </div>
         {activeUser &&
@@ -38,16 +39,9 @@ const FriendInfo = ({ currentFriend, activeUser }) => {
         </div>
       </div>
       <div className="gallery">
-        <img src="./image/8973download.jfif" alt="" />
-        <img src="./image/8973download.jfif" alt="" />
-        <img src="./image/8973download.jfif" alt="" />
-        <img src="./image/8973download.jfif" alt="" />
-        <img src="./image/8973download.jfif" alt="" />
-        <img src="./image/8973download.jfif" alt="" />
-        <img src="./image/8973download.jfif" alt="" />
-        <img src="./image/8973download.jfif" alt="" />
-        <img src="./image/8973download.jfif" alt="" />
-        <img src="./image/8973download.jfif" alt="" />
+      {
+        message && message.length>0? message.map((m,idx)=>m.message.image && <img key={idx} src={`./image/${m.message.image}`} alt="" />):''
+      }
       </div>
     </div>
   );

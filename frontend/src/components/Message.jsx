@@ -52,7 +52,7 @@ const Message = (props) => {
                 </div>
               </div>
             ) : (
-              <div ref={scrollRef} className="fd-message">
+              <div key={idx} ref={scrollRef} className="fd-message">
                 <div className="image-message-time">
                   <img src={`./image/${currentFriend.image}`} alt="" />
                   <div className="message-time">

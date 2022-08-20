@@ -14,6 +14,8 @@ import {
   ImageMessageSend,
   seenMessage,
   updateMessage,
+  getTheme,
+  themeSet
 } from "../features/actions/messengerAction";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
@@ -21,7 +23,7 @@ import { userLogout } from "../features/actions/authAction";
 
 function Messenger() {
   const dispatch = useDispatch();
-  const { friends, message, messageSendSuccess, message_get_success } =
+  const { friends, message, messageSendSuccess, message_get_success,themeMood } =
     useSelector((state) => state.messenger);
   const { myInfo } = useSelector((state) => state.auth);
 
@@ -251,15 +253,35 @@ function Messenger() {
     scrollRef.current?.scrollIntoView({ behaviour: "smooth" });
   }, [message]);
 
-  const [hide,setHide]=useState(true)
+  const [hide, setHide] = useState(true);
 
-  const logout=()=>{
-    dispatch(userLogout())
-    socket.current.emit('logout',myInfo.id)
+  const logout = () => {
+    dispatch(userLogout());
+    socket.current.emit("logout", myInfo.id);
+  };
+
+  useEffect(() => {
+    dispatch(getTheme());
+  },[]);
+
+  const search=(e)=>{
+    const getFriendClass = document.getElementsByClassName('hover-friend');
+    const friendNameclass=document.getElementsByClassName('Fd_name')
+   
+    for(var i=0;i<getFriendClass.length,i<friendNameclass.length;i++){
+      let text = friendNameclass[i].innerText.toLowerCase();
+      if(text.indexOf(e.target.value.toLowerCase())>-1){
+        getFriendClass[i].style.display='';
+      }
+      else{
+        getFriendClass[i].style.display='none';
+      }
+    }
+
   }
 
   return (
-    <div className="messenger theme">
+    <div className={themeMood === 'dark'?'messenger theme':'messenger'}>
       <Toaster
         position={"top-right"}
         reverseOrder={false}
@@ -282,26 +304,26 @@ function Messenger() {
                 </div>
               </div>
               <div className="icons">
-                <div onClick={()=>setHide(!hide)} className="icon">
+                <div onClick={() => setHide(!hide)} className="icon">
                   <BsThreeDots />
                 </div>
                 <div className="icon">
                   <FaEdit />
                 </div>
-                <div className={hide?'theme_logout':'theme_logout show'}>
-
+                <div className={hide ? "theme_logout" : "theme_logout show"}>
                   <h3>Dark Mode</h3>
                   <div className="on">
                     <label htmlFor="dark">ON</label>
-                    <input value='dark' type="radio" name="theme" id="dark" />
+                    <input onChange={(e)=>dispatch(themeSet(e.target.value))} value="dark" type="radio" name="theme" id="dark" />
                   </div>
-                  
+
                   <div className="of">
                     <label htmlFor="white">OF</label>
-                    <input value="white" type="radio" name="theme" id="white" />
+                    <input onChange={(e)=>dispatch(themeSet(e.target.value))} value="white" type="radio" name="theme" id="white" />
                   </div>
                   <div onClick={logout} className="logout">
-                    <TbLogout/>Logout
+                    <TbLogout />
+                    Logout
                   </div>
                 </div>
               </div>
@@ -312,6 +334,7 @@ function Messenger() {
                   <BiSearch />
                 </button>
                 <input
+                onChange={search}
                   type="text"
                   placeholder="Search"
                   className="form-control"
