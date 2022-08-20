@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { BiSearch } from "react-icons/bi";
 import { BsThreeDots } from "react-icons/bs";
 import { FaEdit } from "react-icons/fa";
-import ActiveFriend from "./ActiveFriend";
+import { TbLogout } from "react-icons/tb";
 import Friends from "./Friends";
 import RightSide from "./RightSide";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,16 +13,16 @@ import {
   getMessage,
   ImageMessageSend,
   seenMessage,
-  updateMessage
+  updateMessage,
 } from "../features/actions/messengerAction";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import { userLogout } from "../features/actions/authAction";
 
 function Messenger() {
   const dispatch = useDispatch();
-  const { friends, message, messageSendSuccess,message_get_success } = useSelector(
-    (state) => state.messenger
-  );
+  const { friends, message, messageSendSuccess, message_get_success } =
+    useSelector((state) => state.messenger);
   const { myInfo } = useSelector((state) => state.auth);
 
   // console.log(myInfo.id)
@@ -47,30 +47,29 @@ function Messenger() {
     socket.current.on("typeingMessage", (data) => {
       setTypingMessage(data);
     });
-    socket.current.on('msgSeenResponse',msg=>{
+    socket.current.on("msgSeenResponse", (msg) => {
       dispatch({
-        type:'SEEN_MESSAGE',
-        payload:{
-          msgInfo:msg
-        }
-      })
-    })
+        type: "SEEN_MESSAGE",
+        payload: {
+          msgInfo: msg,
+        },
+      });
+    });
 
-    socket.current.on('msgDelivaredResponse',msg=>{
+    socket.current.on("msgDelivaredResponse", (msg) => {
       dispatch({
-        type:'DELIVARED_MESSAGE',
-        payload:{
-          msgInfo : msg
-        }
-      })
-    })
-    socket.current.on('seenSuccess',data=>{
+        type: "DELIVARED_MESSAGE",
+        payload: {
+          msgInfo: msg,
+        },
+      });
+    });
+    socket.current.on("seenSuccess", (data) => {
       dispatch({
-        type:'SEEN_ALL',
-        payload: data
-      })
-    })
-
+        type: "SEEN_ALL",
+        payload: data,
+      });
+    });
   }, []);
 
   // send data to socket
@@ -99,18 +98,16 @@ function Messenger() {
           },
         });
 
-        dispatch(seenMessage(socketMessage))
-        socket.current.emit('messageSeen',socketMessage);
+        dispatch(seenMessage(socketMessage));
+        socket.current.emit("messageSeen", socketMessage);
         dispatch({
-          type:'UPDATE_FRIEND_MESSAGE',
-          payload:{
-            msgInfo:socketMessage,
-            status:'seen'
-          }
-        })
-        
+          type: "UPDATE_FRIEND_MESSAGE",
+          payload: {
+            msgInfo: socketMessage,
+            status: "seen",
+          },
+        });
       }
-      
     }
     setSocketMessage("");
   }, [socketMessage]);
@@ -132,15 +129,15 @@ function Messenger() {
       socketMessage.receiverId === myInfo.id
     ) {
       toast.success(`${socketMessage.senderName} send a new message`);
-      dispatch(updateMessage(socketMessage))
-      socket.current.emit('delivatedMessage',socketMessage);
+      dispatch(updateMessage(socketMessage));
+      socket.current.emit("delivatedMessage", socketMessage);
       dispatch({
-        type:'UPDATE_FRIEND_MESSAGE',
-        payload:{
-          msgInfo:socketMessage,
-          status:'delivared'
-        }
-      })
+        type: "UPDATE_FRIEND_MESSAGE",
+        payload: {
+          msgInfo: socketMessage,
+          status: "delivared",
+        },
+      });
     }
   }, [socketMessage]);
 
@@ -197,7 +194,6 @@ function Messenger() {
     }
   };
 
-
   useEffect(() => {
     if (messageSendSuccess) {
       socket.current.emit("sendMessage", message[message.length - 1]);
@@ -225,34 +221,45 @@ function Messenger() {
 
   useEffect(() => {
     dispatch(getMessage(currentFriend._id));
-    
   }, [currentFriend?._id]);
 
-  useEffect(()=>{
-    if(message.length>0){
-      if(message[message.length-1].senderId !== myInfo.id && message[message.length-1].status !=='seen'){
+  useEffect(() => {
+    if (message.length > 0) {
+      if (
+        message[message.length - 1].senderId !== myInfo.id &&
+        message[message.length - 1].status !== "seen"
+      ) {
         dispatch({
-          type:'UPDATE',
-          payload:{
-            id:currentFriend._id
-          }
-        })
-        socket.current.emit('seen',{senderId : currentFriend._id,receiverId: myInfo.id})
-        dispatch(seenMessage({_id: message[message.length-1]._id}))
+          type: "UPDATE",
+          payload: {
+            id: currentFriend._id,
+          },
+        });
+        socket.current.emit("seen", {
+          senderId: currentFriend._id,
+          receiverId: myInfo.id,
+        });
+        dispatch(seenMessage({ _id: message[message.length - 1]._id }));
       }
-     
     }
     dispatch({
-      type:'MESSAGE_GET_SUCCESS_CLEAR',
-    })
-  },[message_get_success])
+      type: "MESSAGE_GET_SUCCESS_CLEAR",
+    });
+  }, [message_get_success]);
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behaviour: "smooth" });
   }, [message]);
 
+  const [hide,setHide]=useState(true)
+
+  const logout=()=>{
+    dispatch(userLogout())
+    socket.current.emit('logout',myInfo.id)
+  }
+
   return (
-    <div className="messenger">
+    <div className="messenger theme">
       <Toaster
         position={"top-right"}
         reverseOrder={false}
@@ -275,11 +282,27 @@ function Messenger() {
                 </div>
               </div>
               <div className="icons">
-                <div className="icon">
+                <div onClick={()=>setHide(!hide)} className="icon">
                   <BsThreeDots />
                 </div>
                 <div className="icon">
                   <FaEdit />
+                </div>
+                <div className={hide?'theme_logout':'theme_logout show'}>
+
+                  <h3>Dark Mode</h3>
+                  <div className="on">
+                    <label htmlFor="dark">ON</label>
+                    <input value='dark' type="radio" name="theme" id="dark" />
+                  </div>
+                  
+                  <div className="of">
+                    <label htmlFor="white">OF</label>
+                    <input value="white" type="radio" name="theme" id="white" />
+                  </div>
+                  <div onClick={logout} className="logout">
+                    <TbLogout/>Logout
+                  </div>
                 </div>
               </div>
             </div>
@@ -318,7 +341,11 @@ function Messenger() {
                           : "hover-friend"
                       }
                     >
-                      <Friends activeUser={activeUser} myId={myInfo.id} friend={fd} />
+                      <Friends
+                        activeUser={activeUser}
+                        myId={myInfo.id}
+                        friend={fd}
+                      />
                     </div>
                   ))
                 : "no friends"}

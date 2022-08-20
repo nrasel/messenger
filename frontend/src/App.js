@@ -5,6 +5,7 @@ import Login from "../src/components/Login";
 import Register from "../src/components/Register";
 import "./App.css";
 import Messenger from "./components/Messenger";
+import ProtectRoute from "./components/ProtectRoute";
 
 function App() {
   return (
@@ -13,7 +14,8 @@ function App() {
         <Route path="/messenger/login" component={Login} exact></Route>
 
         <Route path="/messenger/register" component={Register} exact></Route>
-        <Route path="/" component={Messenger} exact></Route>
+        <ProtectRoute path='/' component={Messenger} exact />
+        
       </Switch>
     </Router>
   );

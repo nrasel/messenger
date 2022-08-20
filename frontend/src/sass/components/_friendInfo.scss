@@ -27,7 +27,7 @@
     .name {
       h4 {
         font-size: 600;
-        color: #fff;
+        color: var(--text-color);
         margin-bottom: 8px;
       }
     }
@@ -43,8 +43,11 @@
       flex-direction: row;
       justify-content: space-between;
       margin: 4px 0px;
-      color: #fff;
+      color: var(--text-color);
       cursor: pointer;
+      h3{
+        font-size: 15px;
+      }
       label {
         cursor: pointer;
       }
@@ -64,10 +67,10 @@
       height: 100%;
     }
   }
-  #gallery{
+  #gallery {
     display: none;
   }
-  #gallery:checked ~ .gallery{
+  #gallery:checked ~ .gallery {
     display: grid;
   }
 }

@@ -1,5 +1,5 @@
 import decodeToken from 'jwt-decode'
-import { REGISTER_FAIL, REGISTER_SUCCESS, SUCCESS_MESSAGE_CLEAR, ERROR_MESSAGE_CLEAR, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL } from "../type/authType"
+import { REGISTER_FAIL, REGISTER_SUCCESS, SUCCESS_MESSAGE_CLEAR, ERROR_MESSAGE_CLEAR, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL,LOGOUT_SUCCESS } from "../type/authType"
  
 const authState={
     loading : true,
@@ -63,6 +63,15 @@ export const authReducer =(state = authState
             return {
                 ...state,
                 error:''
+            }
+        }
+
+        if(type===LOGOUT_SUCCESS){
+            return{
+                ...state,
+                authenticate:false,
+                myInfo:'',
+                successMessage:'Logout successful'
             }
         }
 

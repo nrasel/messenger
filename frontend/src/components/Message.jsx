@@ -17,7 +17,7 @@ const Message = (props) => {
                 <div className="">
                   <div className="image-message">
                     <div className="my-text">
-                      <p className="message-text">
+                      <p className="message-text my">
                         {m.message.text === "" ? (
                           <img src={`./image/${m.message.image}`} alt="" />
                         ) : (
@@ -57,7 +57,7 @@ const Message = (props) => {
                   <img src={`./image/${currentFriend.image}`} alt="" />
                   <div className="message-time">
                     <div className="fd-text">
-                      <p className="message-text">
+                      <p className="message-text fd">
                         {m.message.text === "" ? (
                           <img src={`./image/${m.message.image}`} alt="" />
                         ) : (
