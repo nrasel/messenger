@@ -15,7 +15,7 @@ import {
   seenMessage,
   updateMessage,
   getTheme,
-  themeSet
+  themeSet,
 } from "../features/actions/messengerAction";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
@@ -23,7 +23,7 @@ import { userLogout } from "../features/actions/authAction";
 
 function Messenger() {
   const dispatch = useDispatch();
-  const { friends, message, messageSendSuccess, message_get_success,themeMood } =
+  const { friends, message, messageSendSuccess, message_get_success,themeMood,new_user_add } =
     useSelector((state) => state.messenger);
   const { myInfo } = useSelector((state) => state.auth);
 
@@ -84,6 +84,14 @@ function Messenger() {
       const filterUser = users.filter((u) => u.userId !== myInfo.id);
       setActiveUser(filterUser);
     });
+    socket.current.on('new_user_add',data=>{
+      dispatch({
+        type:'NEW_USER_ADD',
+        payload: {
+          new_user_add: data
+        }
+      })
+    })
   }, []);
 
   // check socket msg
@@ -213,7 +221,10 @@ function Messenger() {
 
   useEffect(() => {
     dispatch(getFriends());
-  }, []);
+    dispatch({
+      type:'NEW_USER_ADD_CLEAR'
+    })
+  }, [new_user_add]);
 
   useEffect(() => {
     if (friends && friends.length > 0) {

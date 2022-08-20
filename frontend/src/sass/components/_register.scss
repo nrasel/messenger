@@ -15,6 +15,9 @@
     }
     .card-body {
       .form-group {
+        .form-control{
+          color: #fff;
+        }
         &:last-child {
           margin-bottom: 0px;
         }

@@ -15,14 +15,14 @@ const messengerState = {
   message: [],
   messageSendSuccess: false,
   message_get_success: false,
-  themeMood:''
+  themeMood: "",
+  new_user_add:''
 };
 
 export const messengerReducer = (state = messengerState, action) => {
- 
   const { type, payload } = action;
 
-  if(type ==='THEME_GET_SUCCESS' || type==='THEME_SET_SUCCESS'){
+  if (type === "THEME_GET_SUCCESS" || type === "THEME_SET_SUCCESS") {
     return {
       ...state,
       themeMood: payload.theme,
@@ -117,11 +117,37 @@ export const messengerReducer = (state = messengerState, action) => {
     };
   }
 
-  if(type==='SEEN_ALL'){
-    const index =state.friends.findIndex(f=>f.fndInfo._id === payload.receiverId);
-    state.friends[index].msgInfo.status='seen';
+  if (type === "SEEN_ALL") {
+    const index = state.friends.findIndex(
+      (f) => f.fndInfo._id === payload.receiverId
+    );
+    state.friends[index].msgInfo.status = "seen";
+    return {
+      ...state,
+    };
+  }
+
+  if (type === "LOGOUT_SUCCESS") {
+    return {
+      ...state,
+      friends: [],
+      message: [],
+      messageSendSuccess: false,
+      message_get_success: false,
+    };
+  }
+
+  if(type === 'NEW_USER_ADD'){
     return{
-      ...state
+      ...state,
+      new_user_add:payload.new_user_add
+    }
+  }
+
+  if(type === 'NEW_USER_ADD_CLEAR'){
+    return{
+      ...state,
+      new_user_add:''
     }
   }
 
