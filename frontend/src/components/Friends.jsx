@@ -11,7 +11,7 @@ const Friends = (props) => {
     <div className="friend">
       <div className="friend-image">
         <div className="image">
-          <img src={`./image/${fndInfo.image}`} alt="" />
+          <img src={fndInfo.image} alt="" />
           {activeUser &&
           activeUser.length > 0 &&
           activeUser.some((u) => u.userId === fndInfo._id) ? (
@@ -79,7 +79,7 @@ const Friends = (props) => {
             {/* <img src={`./image/${fndInfo.image}`} alt="" /> */}
 
             {msgInfo.status === "seen" ? (
-              <img src={`./image/${fndInfo.image}`} alt="" />
+              <img src={fndInfo.image} alt="" />
             ) : msgInfo.status === "delivared" ? (
               <div className="delivared">
                 <RiCheckboxCircleFill />

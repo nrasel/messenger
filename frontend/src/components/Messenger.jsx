@@ -180,8 +180,7 @@ function Messenger() {
 
   const imageSend = (e) => {
     if (e.target.files.length !== 0) {
-      const imageName = e.target.files[0].name;
-      const newImageName = Date.now() + imageName;
+     
 
       // socket.current.emit("sendMessage", {
       //   senderId: myInfo.id,
@@ -196,7 +195,6 @@ function Messenger() {
 
       const formData = new FormData();
       formData.append("senderName", myInfo.userName);
-      formData.append("imageName", newImageName);
       formData.append("receiverId", currentFriend._id);
       formData.append("image", e.target.files[0]);
 
@@ -308,7 +306,7 @@ function Messenger() {
             <div className="top">
               <div className="image-name">
                 <div className="image">
-                  <img src={`./image/${myInfo.image}`} alt="" />
+                  <img src={myInfo.image} alt="" />
                 </div>
                 <div className="name">
                   <h3>{myInfo.userName}</h3>

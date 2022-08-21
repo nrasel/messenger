@@ -19,7 +19,7 @@ const Message = (props) => {
                     <div className="my-text">
                       <p className="message-text my">
                         {m.message.text === "" ? (
-                          <img src={`./image/${m.message.image}`} alt="" />
+                          <img src={m.message.image} alt="" />
                         ) : (
                           m.message.text
                         )}
@@ -29,7 +29,7 @@ const Message = (props) => {
                         m.status === "seen" ? (
                           <img
                             className="img"
-                            src={`./image/${currentFriend.image}`}
+                            src={currentFriend.image}
                             alt=""
                           />
                         ) : m.status === "delivared" ? (
@@ -54,12 +54,12 @@ const Message = (props) => {
             ) : (
               <div key={idx} ref={scrollRef} className="fd-message">
                 <div className="image-message-time">
-                  <img src={`./image/${currentFriend.image}`} alt="" />
+                  <img src={currentFriend.image} alt="" />
                   <div className="message-time">
                     <div className="fd-text">
                       <p className="message-text fd">
                         {m.message.text === "" ? (
-                          <img src={`./image/${m.message.image}`} alt="" />
+                          <img src={m.message.image} alt="" />
                         ) : (
                           m.message.text
                         )}
@@ -75,7 +75,7 @@ const Message = (props) => {
           )
         ) : (
           <div className="friend_connect">
-            <img src={`./image/${currentFriend.image}`} alt="" />
+            <img src={currentFriend.image} alt="" />
             <h3>{currentFriend.userName} connect you</h3>
             <span>
               {moment(currentFriend.createdAt).startOf("mini").fromNow()}
@@ -89,7 +89,7 @@ const Message = (props) => {
         typeingMessage.senderId === currentFriend._id ? (
           <div className="fd-message">
             <div className="image-message-time">
-              <img src={`./image/${currentFriend.image}`} alt="" />
+              <img src={currentFriend.image} alt="" />
               <div className="message-time">
                 <div className="fd-text">
                   <p className="message-text">typing.....</p>

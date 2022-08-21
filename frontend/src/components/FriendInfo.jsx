@@ -8,7 +8,7 @@ const FriendInfo = ({ currentFriend, activeUser,message }) => {
       <input type="checkbox" id="gallery" />
       <div className="image-name">
         <div className="image">
-          <img src={`./image/${currentFriend.image}`} alt="" />
+          <img src={currentFriend.image} alt="" />
         </div>
         {activeUser &&
         activeUser.length > 0 &&
@@ -40,7 +40,7 @@ const FriendInfo = ({ currentFriend, activeUser,message }) => {
       </div>
       <div className="gallery">
       {
-        message && message.length>0? message.map((m,idx)=>m.message.image && <img key={idx} src={`./image/${m.message.image}`} alt="" />):''
+        message && message.length>0? message.map((m,idx)=>m.message.image && <img key={idx} src={m.message.image} alt="" />):''
       }
       </div>
     </div>

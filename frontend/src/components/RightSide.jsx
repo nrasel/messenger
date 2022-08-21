@@ -29,7 +29,7 @@ const RightSide = (props) => {
               <div className="header">
                 <div className="image-name">
                   <div className="image">
-                    <img src={`./image/${currentFriend.image}`} alt="" />
+                    <img src={currentFriend.image} alt="" />
 
                     {activeUser &&
                     activeUser.length > 0 &&
