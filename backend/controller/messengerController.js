@@ -25,13 +25,12 @@ module.exports.getFriends = async (req, res) => {
     const friendGet = await User.find({
       _id: { $ne: myId },
     });
-    // console.log(friendGet)
-    // const filter = friendGet.filter((d) => d.id !== myId);
+  
 
     for (let i = 0; i < friendGet.length; i++) {
       let lmsg = await getLastMessage(myId, friendGet[i].id);
       fnd_msg = [...fnd_msg, { fndInfo: friendGet[i], msgInfo: lmsg }];
-      // console.log(fnd_msg)
+      
     }
 
     res.status(200).json({ success: true, friends: fnd_msg });
@@ -78,11 +77,7 @@ module.exports.messageGet = async (req, res) => {
         },
       ],
     });
-    // getAllMessage = getAllMessage.filter(
-    //   (m) =>
-    //     (m.senderId === myId && m.receiverId === fdId) ||
-    //     (m.receiverId === myId && m.senderId == fdId)
-    // );
+  
     res.status(200).json({ success: true, message: getAllMessage });
   } catch (error) {
     res.status(500).json({ error: { errorMessage: "Internal server error" } });
@@ -150,7 +145,7 @@ module.exports.ImageMessageSend = (req, res) => {
 };
 
 module.exports.messageSeen = async (req, res) => {
-  console.log(req.body);
+  
   const messageId = req.body._id;
 
   await messageModel
@@ -166,7 +161,7 @@ module.exports.messageSeen = async (req, res) => {
 };
 
 module.exports.delivaredMessage = async (req, res) => {
-  console.log(req.body);
+ 
   const messageId = req.body._id;
 
   await messageModel

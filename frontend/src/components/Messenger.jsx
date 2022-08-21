@@ -21,13 +21,17 @@ import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { userLogout } from "../features/actions/authAction";
 
+
 function Messenger() {
+
+ 
+
   const dispatch = useDispatch();
   const { friends, message, messageSendSuccess, message_get_success,themeMood,new_user_add } =
     useSelector((state) => state.messenger);
   const { myInfo } = useSelector((state) => state.auth);
 
-  // console.log(myInfo.id)
+
 
   const [currentFriend, setCurrentFriend] = useState("");
   const [newMessage, setNewMessage] = useState("");
@@ -42,7 +46,7 @@ function Messenger() {
   // for socket
   const socket = useRef();
   useEffect(() => {
-    socket.current = io("ws://localhost:8000");
+    socket.current = io("/");
     socket.current.on("getMessage", (data) => {
       setSocketMessage(data);
     });
@@ -181,17 +185,6 @@ function Messenger() {
   const imageSend = (e) => {
     if (e.target.files.length !== 0) {
      
-
-      // socket.current.emit("sendMessage", {
-      //   senderId: myInfo.id,
-      //   senderName: myInfo.userName,
-      //   receiverId: currentFriend._id,
-      //   time: new Date(),
-      //   message: {
-      //     text: "",
-      //     image: newImageName,
-      //   },
-      // });
 
       const formData = new FormData();
       formData.append("senderName", myInfo.userName);
